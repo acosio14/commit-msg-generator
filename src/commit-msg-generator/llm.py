@@ -1,12 +1,13 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
 class LLM:
-    def __init__(self, model: str):
-        self.model = "poolside/laguna-s-2.1:free"
+    def __init__(self, model: str = "poolside/laguna-s-2.1:free"):
+        self.model = model
 
 
     def run_llm(self, git_diff: str):
@@ -26,17 +27,17 @@ class LLM:
                     "The commit messages should be prefixed with one of following types: " \
                     "fix, feat, build, chore, ci, docs, style, refactor, perf, test. " \
                     "Keep commit message under 150 characters. "
-                    "Return in a json format structe, example shown in the delimited triple backticks:\n" \
+                    "Return a string in a json format structure, example shown in the delimited triple backticks:\n" \
                     f"""
-                    ```
+                    '
                     {{
-                      response: 
+                      "response": 
                         {{
-                          commit_message: "fix: remove bug", 
-                          model: "{self.model}"
+                          "commit_message": "fix: remove bug", 
+                          "model": "{self.model}"
                         }}
                     }}
-                    ```
+                    '
                     """
                 ),
                 input=(
@@ -47,4 +48,5 @@ class LLM:
                 )
             )
 
-            return response.output_text
+            output_json= json.loads(response.output_text)
+            print(output_json["response"]["commit_message"])
