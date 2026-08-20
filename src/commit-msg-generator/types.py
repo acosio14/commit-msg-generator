@@ -8,5 +8,5 @@ class ChunkMsg:
 
 @dataclass
 class GitDiffMsg:
-    files: list[ChunkMsg]
+    changes: list[ChunkMsg]
     raw_text: str
