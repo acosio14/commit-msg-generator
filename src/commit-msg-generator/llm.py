@@ -19,6 +19,9 @@ load_dotenv()
 class LLMError(Exception):
     pass
 
+class CommitMsgError(ValueError):
+    pass
+
 FATAL = (
     BadRequestResponseError,
     UnauthorizedResponseError,
@@ -87,15 +90,25 @@ class LLM:
                                 f"```{git_diff}```" \
                             )
                         )
-                    return json.loads(response.output_text)
+                    response_json =  json.loads(response.output_text)
 
+                    # if doesn't include prefix or less than 150 char -> fail
+                    prefix_list = ["fix", "feat", "build", "chore", "ci", "docs", "style", "refactor", "perf", "test"]
+                    prefix, msg = response_json["commit_message"].split(":")
+                    if prefix not in prefix_list:
+                        raise CommitMsgError # will it crash? Need it to retry
+                    
+                    if len(msg) > 150:
+                        raise CommitMsgError
+
+                    return response_json
 
                 except FATAL as e: # These are fatal errors
-                    raise
+                    raise LLMError
 
                 except RETRY as e: # These are retryable errors
                     print(f"Error: {e}")
                     time.sleep(2 ** attempt)
                     continue
-        raise ValueError("All inputs exhausted")    
+        raise LLMError("All inputs exhausted")    
             
