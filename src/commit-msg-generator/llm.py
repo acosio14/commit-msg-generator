@@ -19,14 +19,35 @@ load_dotenv()
 class LLMError(Exception):
     pass
 
+FATAL = (
+    BadRequestResponseError,
+    UnauthorizedResponseError,
+    ForbiddenResponseError,
+)
+RETRY = (
+    json.JSONDecodeError,
+    PayloadTooLargeResponseError, 
+    TooManyRequestsResponseError,
+    InternalServerResponseError,
+    BadGatewayResponseError,
+    ServiceUnavailableResponseError,
+)
 
 class LLM:
     def __init__(self, model: str = "poolside/laguna-s-2.1:free"):
-        self.model = model
+        self.default_model = [model]
+        self.fallback_models = [
+            "z-ai/glm-5.2:free",
+            "liquid/lfm-2.5-2.6b:free",
+            "nvidia/nemotron-3.5-lightning:free",
+            "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "google/gemma-4-26b-a4b-it:free",
+            "google/gemma-4-31b-it:free",
+            "openai/gpt-oss-20b:free"
+            ]
 
-
-    def run_llm(self, git_diff: str, max_attempts: int = 4):
-        models = self.model + fallback_models
+    def run_llm(self, git_diff: str, max_attempts: int = 4) -> dict[str]:
+        models = self.default_model.extend(self.fallback_models)
         for model in models:
             for attempt in range(max_attempts):
                 try:
@@ -51,11 +72,8 @@ class LLM:
                                 f"""
                                 '
                                 {{
-                                "response": 
-                                    {{
-                                    "commit_message": "fix: remove bug", 
-                                    "model": "{model}"
-                                    }}
+                                "model": "{model}",
+                                "commit_message": "fix: remove bug"
                                 }}
                                 '
                                 """
@@ -64,8 +82,8 @@ class LLM:
                             ),
                             input=(
                                 f"Take the given git diff context in the delimited triple backticks and " \
-                                f"write a conventional commit message that summarizes all the changes being implemented " \
-                                f"in the code in one concise sentence. "
+                                f"write a conventional commit message that summarizes all the changes " \
+                                f"being implemented in the code in one concise sentence. " \
                                 f"```{git_diff}```" \
                             )
                         )
@@ -75,9 +93,9 @@ class LLM:
                 except FATAL as e: # These are fatal errors
                     raise
 
-                except json.JSONDecodeError as e: # These are retryable errors
+                except RETRY as e: # These are retryable errors
                     print(f"Error: {e}")
                     time.sleep(2 ** attempt)
                     continue
-            
+        raise ValueError("All inputs exhausted")    
             
