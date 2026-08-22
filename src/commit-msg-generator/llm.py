@@ -1,14 +1,5 @@
 from openrouter import OpenRouter
-from openrouter.errors import (
-    BadRequestResponseError,
-    UnauthorizedResponseError,
-    ForbiddenResponseError,
-    PayloadTooLargeResponseError,
-    TooManyRequestsResponseError,
-    InternalServerResponseError,
-    BadGatewayResponseError,
-    ServiceUnavailableResponseError
-)
+from openrouter import errors
 import os
 from dotenv import load_dotenv
 import json
@@ -23,10 +14,10 @@ class CommitMsgError(ValueError):
     pass
 
 FATAL = (
-    BadRequestResponseError,
-    UnauthorizedResponseError,
-    ForbiddenResponseError,
-    PayloadTooLargeResponseError, 
+    errors.BadRequestResponseError,
+    errors.UnauthorizedResponseError,
+    errors.ForbiddenResponseError,
+    errors.PayloadTooLargeResponseError, 
 )
 
 #Add Reroutes: TooManyRequestsResponseError, ProviderOverloadedResponseError, NotFoundResponseError, ResponseValidationError
@@ -36,10 +27,10 @@ FATAL = (
 RETRY = (
     CommitMsgError,
     json.JSONDecodeError,
-    TooManyRequestsResponseError,
-    InternalServerResponseError,
-    BadGatewayResponseError,
-    ServiceUnavailableResponseError,
+    errors.TooManyRequestsResponseError,
+    errors.InternalServerResponseError,
+    errors.BadGatewayResponseError,
+    errors.ServiceUnavailableResponseError,
 )
 
 class LLM:
@@ -122,4 +113,14 @@ class LLM:
                         print(f"Error: {e}")
                         time.sleep(2 ** attempt)
                         continue
-        raise LLMError("All inputs exhausted")                
+        raise LLMError("All inputs exhausted")
+
+# Diff size - diffs blow past small context window easily. Nothing measures or truncates the input.
+# Prompt injection from the diff: how to handle
+# Empty diff -> no guard against it, could get a hallucinated message
+# max_tokens can be another tool to limit models from typing too much
+# temperature set to low can lead to more likely format. (more deterministic the lower)
+# model return wasted tokens? IDK about that.
+# Need logging instead of print statements
+# No API key check. os.environ.get returns None silently. fail fast at startup
+# Move load_dotenv() to entrypoint -> main()
