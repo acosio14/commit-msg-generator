@@ -1,0 +1,40 @@
+[build-system]
+requires = ["uv_build>=0.12.10,<0.13"]
+build-backend = "uv_build"
+
+[project]
+name = "commit-msg-generator"
+version = "0.1.0"
+description = "CLI to generate conventional commits with LLM"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Adrian Cosio", email = "adriancosio14@gmail.com" }]
+dependencies = []
+
+[dependency-groups]
+lint = ["ruff>=0.14", "ty>=0.0.1a10"]
+test = ["pytest>=8"]
+dev = [{ include-group = "lint" }, { include-group = "test" }]
+
+[project.scripts]
+cmg = "commit_msg_generator.cli:main"
+commit-msg-generator = "commit_msg_generator.cli:main"
+
+[tool.ty.rules]
+dynamic-function-decorator-return = "error"
+missing-type-argument = "error"
+possibly-unresolved-reference = "warn"
+unsound-return-statement = "error"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ANN", "PYI"]
+preview = true
+
+[tool.ruff.lint.per-file-ignores]
+"test/**" = ["ANN", "S101"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
