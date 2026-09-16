@@ -1,21 +1,43 @@
 import re
+from dataclasses import dataclass
+from typing import List
 
-def run(diff_stat: str, diff_file_status: str, diff_message: str):
+@dataclass
+class FileDiff:
+    file: str
+    status: str
+    header: str
+    hunk: str
+    diff_content: str
+    stats: tuple[str]
 
-    stats = []
-    for line in diff_stat.splitlines():
-        added, deleted, filepath = line.split()
-        stats.append(
-            (int(added), int(deleted), str(filepath))
-        )
 
-    name_status = []
-    for line in diff_file_status.splitlines():
-        status, file = line.split()
-        name_status.append(
-            (status, file)
-        )
+class DiffParser:
+    def __init__(self, num_stat: str, name_status: str, diff_message: str) -> None:
+        self.stat = num_stat
+        self.status = name_status
+        self.diff_msg = diff_message
 
-    diff_files = re.split(r'(?=diff)', diff_message)
-    for file in diff_files:
-        header, hunk, content = re.split(r"(@@[^@]+@@\n)", file)
+    def get_stats(self):
+        stats = []
+        for line in self.stat.splitlines():
+            added, deleted, filepath = line.split()
+            stats.append(
+                (int(added), int(deleted), str(filepath))
+            )
+
+    def get_status(self):
+        name_status = []
+        for line in self.status.splitlines():
+            status, file = line.split()
+            name_status.append(
+                (status, file)
+            )
+
+    def get_diff_sections(self):
+        diff_files = re.split(r'(?=diff)', self.diff_msg)
+        for file in diff_files:
+            header, hunk, content = re.split(r"(@@[^@]+@@\n)", file)
+
+
+    def run(self) -> List[FileDiff]:
