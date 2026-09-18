@@ -22,21 +22,26 @@ class DiffParser:
         self.status = name_status_msg
         self.diff_msg = diff_message
 
+
     def _get_stats(self):
-        stats = []
+        num_stats = {}
         for line in self.stat.splitlines():
             added, deleted, filepath = line.split()
-            stats.append(
-                (int(added), int(deleted), str(filepath))
-            )
+            num_stats[filepath] = {}
+            num_stats[filepath]["added"] = int(added)
+            num_stats[filepath]["deleted"] = int(deleted)
+
+        return num_stats
+
 
     def _get_status(self):
-        name_status = []
+        name_status = {}
         for line in self.status.splitlines():
             status, file = line.split()
-            name_status.append(
-                (status, file)
-            )
+            name_status[file] = status
+
+        return name_status
+
 
     def _get_diff_sections(self, file_section):
         diff_content_list = []
@@ -50,6 +55,7 @@ class DiffParser:
 
         return header, diff_content_list
 
+
     def _extract_filename(self, file_section):
         # To-Do: Need to get filename parsed from here to go along with header, hunks, contents
         ...
@@ -61,7 +67,7 @@ class DiffParser:
 
         for file_section in file_sections:
             filename = self._extract_filename(file_section)
-            # To-Do: Change status and stats to dicts then I can use key/value pairs to extract values and store in dataclass
+            # To-Do: Change status and stats to dicts then I can use key/value pairs to extract values from them and store in dataclass
             header, diff_content_list = self._get_diff_sections(file_section)
 
             FileDiff(filename, status, stats, header, diff_content_list)
