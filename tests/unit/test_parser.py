@@ -23,12 +23,18 @@ def test_run_one_file_one_line_modification_return_FileDiff():
         "- a = 10"
         "+ a = 11"
     )
+    diff_stats = (
+        "1       1       src/example.py"
+    )
+    diff_status = (
+        "M       src/example.py"
+    )
     diff_parser = DiffParser("","", diff_msg)
     expected_diff_class = [
         FileDiff(
             "src/example.py",
-            "",
-            "",
+            "Modified",
+            {"added_lines": 1, "deleted_lines": 1},
             "diff -- a/src/example.py b/src/example.py\nindex f063189..a2dd04a 100644\n--- a/src/example.py\n+++ b/src/example.py",
             DiffContent(
                 "@@ -91,4 +91 @@",
