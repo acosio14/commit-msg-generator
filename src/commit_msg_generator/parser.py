@@ -35,8 +35,8 @@ class DiffParser:
                 renamed_file = match.split(" => ")[1]
                 filepath = ''.join(filepath.split('{')[0], renamed_file)
             num_stats[filepath] = {}
-            num_stats[filepath]["added"] = int(added)
-            num_stats[filepath]["deleted"] = int(deleted)
+            num_stats[filepath]["added_lines"] = int(added)
+            num_stats[filepath]["deleted_lines"] = int(deleted)
 
         return num_stats
 
@@ -88,17 +88,12 @@ class DiffParser:
 
 
     def _extract_filepath(self, file_section: str) -> str:
-        try:
-            top_diff_header = file_section.splitlines()[0]
-        except Exception as e:
-            logger.exception("error: can not extract filename.")
+        top_diff_header = file_section.splitlines()[0]
             
-        # To-Do: add guardrail against empty diff_messages, else get out of range error.
         return re.split(r'(?<=b/)', top_diff_header)[1]
         
 
     def run(self) -> List[FileDiff]:
-        # To-Do: fix file_section split, currently -> ['', 'diff --git ...]
         file_sections = re.split(r'(?=diff\s--git)', self.diff_msg)[1:] # first index is empty, starting at 1
         name_status = self._get_status() # status, file
         num_stats = self._get_stats() # added, deleted, filepath
@@ -115,6 +110,5 @@ class DiffParser:
         return file_diff_list
 
 # To-Do:
-# - Manually test out parser with ipython
 # - Make List of unit test for parser (good, bad, edge-cases)
-# - Add logger and error handling
+# - Add logger and error handling across all functions
