@@ -24,16 +24,18 @@ def test_run_one_file_one_line_modification_return_FileDiff():
         "+ a = 11"
     )
     diff_parser = DiffParser("","", diff_msg)
-    expected_diff_class = FileDiff(
-        "src/example.py",
-        "",
-        "",
-        "diff -- a/src/example.py b/src/example.py\nindex f063189..a2dd04a 100644\n--- a/src/example.py\n+++ b/src/example.py",
-        DiffContent(
-            "@@ -91,4 +91 @@",
-            " class Addition:\n- a = 10\n+ a = 11"
-            )
+    expected_diff_class = [
+        FileDiff(
+            "src/example.py",
+            "",
+            "",
+            "diff -- a/src/example.py b/src/example.py\nindex f063189..a2dd04a 100644\n--- a/src/example.py\n+++ b/src/example.py",
+            DiffContent(
+                "@@ -91,4 +91 @@",
+                " class Addition:\n- a = 10\n+ a = 11"
+                )
         )
+    ]
 
     # Act.
     list_of_file_diff = diff_parser.run()
