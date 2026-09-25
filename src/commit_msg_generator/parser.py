@@ -1,6 +1,9 @@
 import re
+import logging
 from dataclasses import dataclass
 from typing import List
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class DiffContent:
@@ -26,12 +29,6 @@ class DiffParser:
     def _get_stats(self) -> dict[str, int]:
         num_stats = {}
         for line in self.stat.splitlines():
-            # To-Do: Extract correct filename (the one its being renamed too):
-            # 0       0       src/commit_msg_generator/{prompt_formatter.py => formatter.py}
-            # added = 0
-            # deleted = 0
-            # filepath = 'src/commit_msg_generator/{promt_formatter.py => formatter.py}'
-
             added, deleted, filepath = line.split()
             if '{' in filepath:
                 match = re.search(r"\{([^}]+)\}", filepath)
@@ -69,8 +66,6 @@ class DiffParser:
         }
         name_status = {}
         for line in self.status.splitlines():
-            # To-Do: R100    src/commit_msg_generator/prompt_formatter.py    src/commit_msg_generator/formatter.py
-            # Need to extract last filename to match _extract_filename output.
             output_status, filepath = line.split()
             if 'R' in output_status:
                 filepath = filepath.split()[1]
@@ -82,30 +77,35 @@ class DiffParser:
 
     def _get_diff_sections(self, file_section) -> tuple[str, str]:
         diff_content_list = []
-        for section in file_section:
-            header, file_diff = re.split(r"(?=@@[\d\s\+\-\,]+@@)", section, maxsplit=1)
+        header, file_diff = re.split(r"(?=@@[\d\s\+\-\,]+@@)", file_section, maxsplit=1)
 
-            diffs = re.split(r"(?=@@[\d\s\+\-\,]+@@)", file_diff)
-            for diff in diffs:
-                hunk, content = re.split(r"(?=@@[\d\s\+\-\,]+@@)", diff)
-                diff_content_list.append(DiffContent(hunk, content))
+        diffs = re.split(r"(?=@@[\d\s\+\-\,]+@@)", file_diff)[1:]
+        for diff in diffs:
+            hunk, content = re.split(r"(@@[\d\s\+\-\,]+@@)", diff)[1:]
+            diff_content_list.append(DiffContent(hunk, content))
 
         return header, diff_content_list
 
 
     def _extract_filepath(self, file_section: str) -> str:
-        top_diff_header = file_section.splitlines()[0]
-        return re.split(r'?<=b/', top_diff_header)[0]
+        try:
+            top_diff_header = file_section.splitlines()[0]
+        except Exception as e:
+            logger.exception("error: can not extract filename.")
+            
+        # To-Do: add guardrail against empty diff_messages, else get out of range error.
+        return re.split(r'(?<=b/)', top_diff_header)[1]
         
 
     def run(self) -> List[FileDiff]:
-        file_sections = re.split(r'(?=diff\s--git)', self.diff_msg)
+        # To-Do: fix file_section split, currently -> ['', 'diff --git ...]
+        file_sections = re.split(r'(?=diff\s--git)', self.diff_msg)[1:] # first index is empty, starting at 1
         name_status = self._get_status() # status, file
         num_stats = self._get_stats() # added, deleted, filepath
 
         file_diff_list = []
         for file_section in file_sections:
-            filename = self._extract_filename(file_section)
+            filename = self._extract_filepath(file_section)
             status = name_status.get(filename)
             stats = num_stats.get(filename)
             header, diff_content_list = self._get_diff_sections(file_section)
@@ -113,3 +113,8 @@ class DiffParser:
             file_diff_list.append(FileDiff(filename, status, stats, header, diff_content_list))
 
         return file_diff_list
+
+# To-Do:
+# - Manually test out parser with ipython
+# - Make List of unit test for parser (good, bad, edge-cases)
+# - Add logger and error handling
