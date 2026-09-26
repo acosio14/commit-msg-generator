@@ -1,5 +1,5 @@
 import pytest
-from src.commit_msg_generator.parser import DiffParser, FileDiff, DiffContent
+from commit_msg_generator.parser import DiffParser, FileDiff, DiffContent
 
 """
 Tests
@@ -15,12 +15,12 @@ Tests
 def test_run_one_file_one_line_modification_return_FileDiff():
     # Arrange.
     diff_msg = (
-        "diff --git a/src/example.py b/src/example.py"
-        "index f063189..a2dd04a 100644"
-        "--- a/src/example.py"
-        "+++ b/src/example.py"
-        "@@ -91,4 +91 @@ class Addition:"
-        "- a = 10"
+        "diff --git a/src/example.py b/src/example.py\n"
+        "index f063189..a2dd04a 100644\n"
+        "--- a/src/example.py\n"
+        "+++ b/src/example.py\n"
+        "@@ -91,4 +91 @@ class Addition:\n"
+        "- a = 10\n"
         "+ a = 11"
     )
     diff_stats = (
@@ -29,17 +29,19 @@ def test_run_one_file_one_line_modification_return_FileDiff():
     diff_status = (
         "M       src/example.py"
     )
-    diff_parser = DiffParser("","", diff_msg)
+    diff_parser = DiffParser(diff_stats, diff_status, diff_msg)
     expected_diff_class = [
         FileDiff(
             "src/example.py",
             "Modified",
             {"added_lines": 1, "deleted_lines": 1},
-            "diff -- a/src/example.py b/src/example.py\nindex f063189..a2dd04a 100644\n--- a/src/example.py\n+++ b/src/example.py",
-            DiffContent(
-                "@@ -91,4 +91 @@",
-                " class Addition:\n- a = 10\n+ a = 11"
+            "diff --git a/src/example.py b/src/example.py\nindex f063189..a2dd04a 100644\n--- a/src/example.py\n+++ b/src/example.py\n",
+            [
+                DiffContent(
+                    "@@ -91,4 +91 @@",
+                    " class Addition:\n- a = 10\n+ a = 11"
                 )
+            ]
         )
     ]
 
