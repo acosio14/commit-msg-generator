@@ -13,12 +13,18 @@ license-files = ["LICENSE"]
 authors = [{ name = "Adrian Cosio", email = "adriancosio14@gmail.com" }]
 dependencies = [
     "ipython>=8.39.0",
+    "pyyaml>=6.0.3",
     "sh>=2.4.0",
 ]
 
 [dependency-groups]
-lint = ["ruff>=0.14", "ty>=0.0.1a10"]
-test = ["pytest>=8"]
+lint = [
+    "ruff>=0.14",
+    "ty>=0.0.1a10",
+]
+test = [
+    "pytest>=8",
+]
 dev = [{ include-group = "lint" }, { include-group = "test" }]
 
 [project.scripts]
