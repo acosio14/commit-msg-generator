@@ -1,5 +1,5 @@
 import logging
-from commit_msg_generator import git_commands, formatter
+from commit_msg_generator import git_commands, formatter, llm_api
 from commit_msg_generator.parser import DiffParser
 
 def main():
@@ -14,7 +14,9 @@ def main():
 
     list_of_file_diffs = DiffParser(diff_stats, diff_name_status, diff_message).run()
 
-    llm_prompt = formatter(list_of_file_diffs)
+    prompt_msg = formatter.format_file_diffs(list_of_file_diffs)
 
+    llm_api.send_prompt(prompt_msg)
+    
 if __name__ == "__main__":
     main()
