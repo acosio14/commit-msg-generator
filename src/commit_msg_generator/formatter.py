@@ -34,9 +34,11 @@ def format_file_diffs(list_file_diffs: FileDiff) -> Prompt:
         formatted_diffs.append(diff_header + diffs)
 
     return Prompt(
-        "Using the information of the git diff in the " \
-        "delimited triple backticks in xml format, " \
-        "write 3 conventional commit messages.\n" \
-        f"```\n{("").join(formatted_diffs)}\n```"
+        msg = (
+            "Using the information of the git diff in the " \
+            "delimited triple backticks in xml format, " \
+            "write 3 conventional commit messages.\n" \
+            f"```\n{("").join(formatted_diffs)}\n```"
+        )
     )
     
