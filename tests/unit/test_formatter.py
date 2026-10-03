@@ -41,7 +41,7 @@ def test_format_file_diffs_one_line_modification_returns_prompt_with_xml_formatt
     )
 
     # Act.
-    prompt = format_file_diffs(diff_class)
+    prompt = format_file_diffs(diff_class).msg
 
     # Assert.
     assert prompt == expected_prompt
