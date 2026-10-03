@@ -15,17 +15,18 @@ def format_file_diffs(list_file_diffs: FileDiff) -> Prompt:
     formatted_diffs = []
     for file_diffs in list_file_diffs:
         diff_header = (
-            f"<file> {file_diffs.file}</file>\n"
-            f"<status>{file_diffs.status}</status\n"
-            f"<stats>{file_diffs.stats}</stats>\n"
+            f"<file>{file_diffs.file}</file>\n"
+            f"<status>{file_diffs.status}</status>\n"
+            f"<stats><added_lines>{file_diffs.stats["added_lines"]}</added_lines>"
+            f"<deleted_lines>{file_diffs.stats["deleted_lines"]}</deleted_lines></stats>\n"
             f"<header>{file_diffs.header}</header>\n"
         )
         diffs = ""
-        for diff in file_diffs:
+        for diff in file_diffs.diffs:
             diff = (
                 "<diffs>\n"
-                f"<hunk>{diff.hunk}</hunk>j\n"
-                f"<content>{diff.cotent}</content>\n"
+                f"<hunk>{diff.hunk}</hunk>\n"
+                f"<content>{diff.content}</content>\n"
                 "</diffs>\n"
             )
             diffs += diff
@@ -36,6 +37,6 @@ def format_file_diffs(list_file_diffs: FileDiff) -> Prompt:
         "Using the information of the git diff in the " \
         "delimited triple backticks in xml format, " \
         "write 3 conventional commit messages.\n" \
-        f"```\n {("").join(formatted_diffs)}\n```"
+        f"```\n{("").join(formatted_diffs)}\n```"
     )
     
