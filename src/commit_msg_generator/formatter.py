@@ -33,15 +33,37 @@ def format_file_diffs(list_file_diffs: FileDiff) -> Prompt:
 
         formatted_diffs.append(diff_header + diffs)
 
+    types = (
+        """Types
+- `feat` Commits that add, adjust or remove a feature
+- `fix` Commits that fix bug of a preceded `feat` commit
+- `refactor` Commits that rewrite or restructure code without altering API or UI behavior
+- `perf` Commits are special type of `refactor` commits that specifically improve performance
+- `style` Commits that address code style (e.g., white-space, formatting, missing semi-colons) and do not affect application behavior
+- `test` Commits that add missing tests or correct existing ones
+- `docs` Commits that exclusively affect documentation
+- `build` Commits that affect build-related components such as build tools, dependencies, project version, ...
+- `ops` Commits that affect operational aspects like infrastructure (IaC), deployment scripts, CI/CD pipelines, backups, monitoring, or recovery procedures, ...
+- `chore` Commits that represent tasks like initial commit, modifying `.gitignore`, ..."""
+    )
+
     return Prompt(
         msg = (
-            "Using the information of the git diff in the " \
-            "delimited triple backticks in xml format, " \
+            "Use the information of the git diff in the " \
+            "delimited triple backticks in xml format to, " \
             "write 3 conventional commit messages.\n" \
-            "Return output in an ordered list, for example:\n" \
-            "feat: add plotting function\n" \
-            "feat: use matplotlib to plot\n" \
-            "feat(plot): add new function to view charts\n" \
+            f"They should be one of the following types:\n {types}\n"
+            "Return a JSON formatted output of an" \
+            "unnumbered ordered list. Ouput format should" \
+            "look like the following example:\n" \
+            "{\n"
+            "'commits':\n"
+            "  [\n"
+            "    'feat: commit msg one',\n"
+            "    'feat: commit msg two',\n"
+            "    'feat: commit msg three'\n"
+            "  ]\n" \
+            "}\n" \
             f"```\n{("").join(formatted_diffs)}\n```"
         )
     )
