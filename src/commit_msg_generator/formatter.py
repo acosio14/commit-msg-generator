@@ -38,6 +38,10 @@ def format_file_diffs(list_file_diffs: FileDiff) -> Prompt:
             "Using the information of the git diff in the " \
             "delimited triple backticks in xml format, " \
             "write 3 conventional commit messages.\n" \
+            "Return output in an ordered list, for example:\n" \
+            "feat: add plotting function\n" \
+            "feat: use matplotlib to plot\n" \
+            "feat(plot): add new function to view charts\n" \
             f"```\n{("").join(formatted_diffs)}\n```"
         )
     )
