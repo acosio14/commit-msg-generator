@@ -7,7 +7,7 @@ load_dotenv()
 
 def main():
     logging.basicConfig(
-        level=logging.WARNING, 
+        level=logging.INFO, 
         format="%(asctime)s %(levelname)s: %(messages)s",
     )
 
@@ -19,7 +19,18 @@ def main():
 
     prompt = formatter.format_file_diffs(list_of_file_diffs)
 
-    llm_api.send_prompt(prompt)
+    response = llm_api.send_prompt(prompt)
+
+    print("Select a commit message:\n")
+    for i, commit in enumerate(response["commits"]):
+        print(f"{i}) {commit}")
+    print(f"{i+1}) None")
+
+    selected_index = int(input())
+    if selected_index < i+1:
+        git_commands.commit(
+            response["commits"][selected_index]
+        )
     
 if __name__ == "__main__":
     main()
