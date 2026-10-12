@@ -4,36 +4,21 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def diff_num_stat():
-    diff_stat = subprocess.run(["git", "diff", "--staged", "--numstat"], capture_output=True, text=True).stdout
-    if len(diff_stat) == 0:
-        logger.exception(
-            "error: git diff stats returned empty string. "
-            "Verify that changes are staged."
-        )
-    else:
-        return diff_stat
-
-def diff_name_status():
-    diff_name_status = subprocess.run(["git", "diff", "--staged", "--name-status"], capture_output=True, text=True).stdout
-    if len(diff_name_status) == 0:
+def diff_commands():
+    diff_outputs = []
+    diff_commands = ["--numstat", "--name-status", "--unified=0"]
+    for command in diff_commands:
+        output = subprocess.run(["git", "diff", "--staged", command], capture_output=True, text=True).stdout
+        if len(output) == 0:
+            logger.exception(
+                        f"error: 'git diff --staged {command}' returned empty string. "
+                        "Verify that changes are staged."
+                    )
+        else:
+            diff_outputs.append(output)
         
-        logger.exception(
-            "error: git diff name status returned empty string. "
-            "Verify that changes are staged."
-        )
-    else:
-        return diff_name_status
+    return diff_outputs
 
-def diff() -> str:
-    diff_msg = subprocess.run(["git", "diff", "--staged", "--unified=0"], capture_output=True, text=True).stdout
-    if len(diff_msg) == 0:
-        logger.exception(
-            "error: git diff return empty string. "
-            "Verify that changes are staged."
-        )
-    else:
-        return diff_msg
 
 def commit(msg: str) -> None:
     try:

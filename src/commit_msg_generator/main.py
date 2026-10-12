@@ -21,10 +21,11 @@ def main():
 
     response = llm_api.send_prompt(prompt)
 
-    print("Select a commit message:\n")
+    print("Commit messages:")
     for i, commit in enumerate(response["commits"]):
         print(f"{i}) {commit}")
     print(f"{i+1}) None")
+    print("\nSelect one: ")
 
     selected_index = int(input())
     if selected_index < i+1:
