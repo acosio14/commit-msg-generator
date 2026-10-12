@@ -11,9 +11,9 @@ def diff_commands():
         output = subprocess.run(["git", "diff", "--staged", command], capture_output=True, text=True).stdout
         if len(output) == 0:
             logger.exception(
-                        f"error: 'git diff --staged {command}' returned empty string. "
-                        "Verify that changes are staged."
-                    )
+                f"error: 'git diff --staged {command}' returned empty string. "
+                "Verify that changes are staged."
+            )
         else:
             diff_outputs.append(output)
         
@@ -24,9 +24,7 @@ def commit(msg: str) -> None:
     try:
         subprocess.run(["git", "commit", "-m", msg])
     except:
-        logger.exception(
-            "error: commit msg"
-        )
+        logger.exception("error: commit msg")
 
 # To-Do: 
 # - Add unit test for git-commands
