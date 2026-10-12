@@ -11,9 +11,7 @@ def main():
         format="%(asctime)s %(levelname)s: %(messages)s",
     )
 
-    diff_stats = git_commands.diff_num_stat()
-    diff_name_status = git_commands.diff_name_status()
-    diff_message = git_commands.diff()
+    diff_stats, diff_name_status, diff_message = git_commands.diff_commands()
 
     list_of_file_diffs = DiffParser(diff_stats, diff_name_status, diff_message).run()
 
@@ -26,12 +24,12 @@ def main():
         print(f"{i}) {commit}")
     print(f"{i+1}) None")
     print("\nSelect one: ")
+    # To-Do: If 'None' selected. Give option to retry
+    # To-Do: Add Custom/Manual option. For use to add their own message
 
     selected_index = int(input())
     if selected_index < i+1:
-        git_commands.commit(
-            response["commits"][selected_index]
-        )
+        git_commands.commit(response["commits"][selected_index])
     
 if __name__ == "__main__":
     main()
