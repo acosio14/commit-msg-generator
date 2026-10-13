@@ -36,7 +36,7 @@ def send_prompt(prompt: Prompt, model_index: int = 0):
                 ],
                 response_format={"type": "json_object"}
             )
-            return json.loads(response.choices[0].message.content)
+            return json.loads(response.choices[0].message.content), response.model
         except NotFoundResponseError as not_found_error:
             logger.exception(f"{not_found_error}.")
             raise not_found_error
