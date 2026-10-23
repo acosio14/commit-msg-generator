@@ -5,13 +5,17 @@ from dotenv import load_dotenv
 
 load_dotenv() 
 
-def main():
+def main(eval: bool = False, diff_case: list[str] = None):
     logging.basicConfig(
         level=logging.INFO, 
         format="%(asctime)s %(levelname)s: %(messages)s",
     )
+    
+    if not eval:
+        diff_stats, diff_name_status, diff_message = git_commands.diff_commands()
+    else:
+        diff_stats, diff_name_status, diff_message = diff_case
 
-    diff_stats, diff_name_status, diff_message = git_commands.diff_commands()
 
     list_of_file_diffs = DiffParser(diff_stats, diff_name_status, diff_message).run()
 
