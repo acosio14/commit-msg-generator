@@ -79,9 +79,9 @@ class DiffParser:
         diff_content_list = []
         header, file_diff = re.split(r"(?=@@[\d\s\+\-\,]+@@)", file_section, maxsplit=1)
 
-        diffs = re.split(r"(?=@@[\d\s\+\-\,]+@@)", file_diff)[1:]
+        diffs = re.split(r"(?<!\+|\-)(?=@@[\d\s\+\-\,]+@@)", file_diff)[1:]
         for diff in diffs:
-            hunk, content = re.split(r"(@@[\d\s\+\-\,]+@@)", diff)[1:]
+            hunk, content = re.split(r"(@@[\d\s\+\-\,]+@@)", diff, maxsplit=1)[1:]
             diff_content_list.append(DiffContent(hunk, content))
 
         return header, diff_content_list
@@ -94,7 +94,7 @@ class DiffParser:
         
 
     def run(self) -> List[FileDiff]:
-        file_sections = re.split(r'(?=diff\s--git)', self.diff_msg)[1:] # first index is empty, starting at 1
+        file_sections = re.split(r'(?<!\+)(?=diff\s--git)', self.diff_msg)[1:] # first index is empty, starting at 1
         name_status = self._get_status() # status, file
         num_stats = self._get_stats() # added, deleted, filepath
 
@@ -110,5 +110,7 @@ class DiffParser:
         return file_diff_list
 
 # To-Do:
+# - Error: Parsing diff 'goldens/public-api/router/index.md' in eval diff_cases. 
+#   Find out why it going through and fix. Set Unit test to avoid next time.
 # - Make List of unit test for parser (good, bad, edge-cases)
 # - Add logger and error handling across all functions
