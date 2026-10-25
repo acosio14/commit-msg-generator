@@ -1,0 +1,4 @@
+12	4	internal/pipe/changelog/changelog.go
+15	0	internal/pipe/changelog/changelog_test.go
+1	0	internal/pipe/changelog/testdata/changes-empty.md
+1	0	internal/pipe/changelog/testdata/changes-templated-empty.md

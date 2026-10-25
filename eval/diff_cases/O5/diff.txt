@@ -1,0 +1,46 @@
+diff --git a/src/layers/content_cache.rs b/src/layers/content_cache.rs
+index 768b795dc..f1f0485d1 100644
+--- a/src/layers/content_cache.rs
++++ b/src/layers/content_cache.rs
+@@ -17,12 +17,12 @@ use std::io::ErrorKind;
+ use std::io::Result;
+ use std::pin::Pin;
+ use std::sync::Arc;
+-use std::task::ready;
+ use std::task::Context;
+ use std::task::Poll;
+ 
+ use async_trait::async_trait;
+ use futures::future::BoxFuture;
++use futures::ready;
+ use futures::AsyncRead;
+ use futures::FutureExt;
+ 
+@@ -65,6 +65,7 @@ use crate::ObjectStreamer;
+ ///
+ /// ```
+ /// use std::sync::Arc;
++///
+ /// use anyhow::Result;
+ /// use opendal::layers::ContentCacheLayer;
+ /// use opendal::layers::ContentCacheStrategy;
+diff --git a/src/object/stream.rs b/src/object/stream.rs
+index 8ee5aa1be..fb812a635 100644
+--- a/src/object/stream.rs
++++ b/src/object/stream.rs
+@@ -15,7 +15,6 @@
+ use std::io::Result;
+ use std::pin::Pin;
+ use std::sync::Arc;
+-use std::task::ready;
+ use std::task::Context;
+ use std::task::Poll;
+ use std::vec::IntoIter;
+@@ -23,6 +22,7 @@ use std::vec::IntoIter;
+ use async_trait::async_trait;
+ use futures::future::BoxFuture;
+ use futures::lock::Mutex;
++use futures::ready;
+ use futures::Future;
+ use futures::Stream;
+ use pin_project::pin_project;

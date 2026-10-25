@@ -1,0 +1,6 @@
+test: docker image template test cases
+
+for #2281
+
+Signed-off-by: Carlos A Becker <caarlos0@gmail.com>
+

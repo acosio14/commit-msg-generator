@@ -1,0 +1,5 @@
+fix(http_util): Disable auto compress and enable http proxy (#731)
+
+Signed-off-by: Xuanwo <github@xuanwo.io>
+
+Signed-off-by: Xuanwo <github@xuanwo.io>

@@ -1,0 +1,9 @@
+fix(common): avoid interacting with a destroyed injector (#47243)
+
+The NgOptimizedImage directive was previously trying to use an
+already destroyed injector in the ngOnDestroy callback. This fix
+pre-injects necessery tokens so no injector calls are done
+in the destroy process.
+
+PR Close #47243
+

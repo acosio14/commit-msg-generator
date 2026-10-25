@@ -1,0 +1,50 @@
+diff --git a/packages/compiler/src/style_url_resolver.ts b/packages/compiler/src/style_url_resolver.ts
+index d982b393fd..e27acc9ad8 100644
+--- a/packages/compiler/src/style_url_resolver.ts
++++ b/packages/compiler/src/style_url_resolver.ts
+@@ -9,7 +9,7 @@
+ // Some of the code comes from WebComponents.JS
+ // https://github.com/webcomponents/webcomponentsjs/blob/master/src/HTMLImports/path.js
+ 
+-export function isStyleUrlResolvable(url: string): boolean {
++export function isStyleUrlResolvable(url: string|null): url is string {
+   if (url == null || url.length === 0 || url[0] == '/') return false;
+   const schemeMatch = url.match(URL_WITH_SCHEMA_REGEXP);
+   return schemeMatch === null || schemeMatch[1] == 'package' || schemeMatch[1] == 'asset';
+diff --git a/packages/compiler/src/template_parser/template_preparser.ts b/packages/compiler/src/template_parser/template_preparser.ts
+index 8f10d7b636..9d60bdbf78 100644
+--- a/packages/compiler/src/template_parser/template_preparser.ts
++++ b/packages/compiler/src/template_parser/template_preparser.ts
+@@ -21,8 +21,8 @@ const NG_PROJECT_AS = 'ngProjectAs';
+ 
+ export function preparseElement(ast: html.Element): PreparsedElement {
+   let selectAttr: string|null = null;
+-  let hrefAttr: string = null!;
+-  let relAttr: string = null!;
++  let hrefAttr: string|null = null;
++  let relAttr: string|null = null;
+   let nonBindable = false;
+   let projectAs = '';
+   ast.attrs.forEach(attr => {
+@@ -66,7 +66,7 @@ export enum PreparsedElementType {
+ 
+ export class PreparsedElement {
+   constructor(
+-      public type: PreparsedElementType, public selectAttr: string, public hrefAttr: string,
++      public type: PreparsedElementType, public selectAttr: string, public hrefAttr: string|null,
+       public nonBindable: boolean, public projectAs: string) {}
+ }
+ 
+diff --git a/packages/compiler/test/style_url_resolver_spec.ts b/packages/compiler/test/style_url_resolver_spec.ts
+index e788dd279f..51a7e3fc1d 100644
+--- a/packages/compiler/test/style_url_resolver_spec.ts
++++ b/packages/compiler/test/style_url_resolver_spec.ts
+@@ -18,7 +18,7 @@ describe('isStyleUrlResolvable', () => {
+   });
+ 
+   it('should not resolve empty urls', () => {
+-    expect(isStyleUrlResolvable(null!)).toBe(false);
++    expect(isStyleUrlResolvable(null)).toBe(false);
+     expect(isStyleUrlResolvable('')).toBe(false);
+   });
+ 

@@ -1,0 +1,3 @@
+feat: warn if loaded changelog is whitespace-only (#2885)
+
+Signed-off-by: Carlos A Becker <caarlos0@gmail.com>

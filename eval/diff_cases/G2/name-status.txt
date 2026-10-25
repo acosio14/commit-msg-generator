@@ -1,0 +1,2 @@
+M	pkg/config/config.go
+M	www/docs/static/schema.json

@@ -1,0 +1,65 @@
+diff --git a/commitizen/cli.py b/commitizen/cli.py
+index e1bad367..215d8faf 100644
+--- a/commitizen/cli.py
++++ b/commitizen/cli.py
+@@ -49,6 +49,11 @@ data = {
+                         "action": "store_true",
+                         "help": "show output to stdout, no commit, no modified files",
+                     },
++                    {
++                        "name": "--signoff",
++                        "action": "store_true",
++                        "help": "Sign off the commit",
++                    },
+                 ],
+             },
+             {
+diff --git a/commitizen/commands/commit.py b/commitizen/commands/commit.py
+index bad47dd5..a4c03017 100644
+--- a/commitizen/commands/commit.py
++++ b/commitizen/commands/commit.py
+@@ -78,7 +78,12 @@ class Commit:
+         if dry_run:
+             raise DryRunExit()
+ 
+-        c = git.commit(m)
++        signoff: bool = self.arguments.get("signoff")
++
++        if signoff:
++            c = git.commit(m, "-s")
++        else:
++            c = git.commit(m)
+ 
+         if c.return_code != 0:
+             out.error(c.err)
+diff --git a/tests/commands/test_commit_command.py b/tests/commands/test_commit_command.py
+index 7d56f087..8544833c 100644
+--- a/tests/commands/test_commit_command.py
++++ b/tests/commands/test_commit_command.py
+@@ -107,6 +107,26 @@ def test_commit_command_with_dry_run_option(config, mocker):
+         commit_cmd()
+ 
+ 
++@pytest.mark.usefixtures("staging_is_clean")
++def test_commit_command_with_signoff_option(config, mocker):
++    prompt_mock = mocker.patch("questionary.prompt")
++    prompt_mock.return_value = {
++        "prefix": "feat",
++        "subject": "user created",
++        "scope": "",
++        "is_breaking_change": False,
++        "body": "",
++        "footer": "",
++    }
++
++    commit_mock = mocker.patch("commitizen.git.commit")
++    commit_mock.return_value = cmd.Command("success", "", "", "", 0)
++    success_mock = mocker.patch("commitizen.out.success")
++
++    commands.Commit(config, {"signoff": True})()
++    success_mock.assert_called_once()
++
++
+ def test_commit_when_nothing_to_commit(config, mocker):
+     is_staging_clean_mock = mocker.patch("commitizen.git.is_staging_clean")
+     is_staging_clean_mock.return_value = True

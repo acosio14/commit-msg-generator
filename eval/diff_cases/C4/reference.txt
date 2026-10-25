@@ -1,0 +1,2 @@
+refactor(git): replace GitCommit.message code with one-liner
+

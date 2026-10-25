@@ -1,0 +1,5 @@
+fix: improve schema for signs (#3603)
+
+adds all the options allowed in the `artifacts` field to the schema
+
+Signed-off-by: Carlos A Becker <caarlos0@users.noreply.github.com>

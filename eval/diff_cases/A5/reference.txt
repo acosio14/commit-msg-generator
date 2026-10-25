@@ -1,0 +1,6 @@
+ci: decrease the number of required `public-api` and `size-tracking` reviews (#45855)
+
+This commit updates the PullApprove config to decrease the number of required reviews from `public-api` and `size-tracking` group members.
+
+PR Close #45855
+

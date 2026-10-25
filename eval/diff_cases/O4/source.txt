@@ -1,0 +1,2 @@
+repo: opendal
+commit: 19f6af759a95df3d9345c1f5ee1152a14ce682d4

@@ -1,0 +1,37 @@
+diff --git a/pkg/config/config.go b/pkg/config/config.go
+index f745f82c..367a6d0c 100644
+--- a/pkg/config/config.go
++++ b/pkg/config/config.go
+@@ -686,7 +686,7 @@ type Sign struct {
+ 	Cmd         string   `yaml:"cmd,omitempty" json:"cmd,omitempty"`
+ 	Args        []string `yaml:"args,omitempty" json:"args,omitempty"`
+ 	Signature   string   `yaml:"signature,omitempty" json:"signature,omitempty"`
+-	Artifacts   string   `yaml:"artifacts,omitempty" json:"artifacts,omitempty"`
++	Artifacts   string   `yaml:"artifacts,omitempty" json:"artifacts,omitempty" jsonschema:"enum=all,enum=manifests,enum=images,enum=checksum,enum=source,enum=package,enum=archive,enum=binary,enum=sbom"`
+ 	IDs         []string `yaml:"ids,omitempty" json:"ids,omitempty"`
+ 	Stdin       *string  `yaml:"stdin,omitempty" json:"stdin,omitempty"`
+ 	StdinFile   string   `yaml:"stdin_file,omitempty" json:"stdin_file,omitempty"`
+diff --git a/www/docs/static/schema.json b/www/docs/static/schema.json
+index f1df0725..0d25299d 100644
+--- a/www/docs/static/schema.json
++++ b/www/docs/static/schema.json
+@@ -2293,7 +2293,18 @@
+ 						"type": "string"
+ 					},
+ 					"artifacts": {
+-						"type": "string"
++						"type": "string",
++						"enum": [
++							"all",
++							"manifests",
++							"images",
++							"checksum",
++							"source",
++							"package",
++							"archive",
++							"binary",
++							"sbom"
++						]
+ 					},
+ 					"ids": {
+ 						"items": {

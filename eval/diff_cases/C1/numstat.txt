@@ -1,0 +1,3 @@
+5	0	commitizen/cli.py
+6	1	commitizen/commands/commit.py
+20	0	tests/commands/test_commit_command.py

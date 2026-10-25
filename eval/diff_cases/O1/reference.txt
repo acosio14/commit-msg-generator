@@ -1,0 +1,5 @@
+feat(experiment): Allow user to config http connection pool (#843)
+
+Signed-off-by: Xuanwo <github@xuanwo.io>
+
+Signed-off-by: Xuanwo <github@xuanwo.io>

@@ -1,0 +1,6 @@
+perf(http): remove IE special status handling (#44354)
+
+revert the condition as dev only
+
+PR Close #44354
+

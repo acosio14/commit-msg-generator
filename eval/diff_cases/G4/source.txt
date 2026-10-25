@@ -1,0 +1,2 @@
+repo: goreleaser
+commit: e25b6bb3134f69bca50a8b0c2e43e2ddb1a6ea60

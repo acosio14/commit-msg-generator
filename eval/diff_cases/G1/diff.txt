@@ -1,0 +1,81 @@
+diff --git a/internal/pipe/changelog/changelog.go b/internal/pipe/changelog/changelog.go
+index 15cb2c30..47eccd7e 100644
+--- a/internal/pipe/changelog/changelog.go
++++ b/internal/pipe/changelog/changelog.go
+@@ -316,17 +316,25 @@ func newSCMChangeloger(ctx *context.Context) (changeloger, error) {
+ 
+ func loadContent(ctx *context.Context, fileName, tmplName string) (string, error) {
+ 	if tmplName != "" {
+-		log.Debugf("loading template %s", tmplName)
++		log.Debugf("loading template %q", tmplName)
+ 		content, err := loadFromFile(tmplName)
+ 		if err != nil {
+ 			return "", err
+ 		}
+-		return tmpl.New(ctx).Apply(content)
++		content, err = tmpl.New(ctx).Apply(content)
++		if strings.TrimSpace(content) == "" && err == nil {
++			log.Warnf("loaded %q, but it evaluates to an empty string", tmplName)
++		}
++		return content, err
+ 	}
+ 
+ 	if fileName != "" {
+-		log.Debugf("loading file %s", fileName)
+-		return loadFromFile(fileName)
++		log.Debugf("loading file %q", fileName)
++		content, err := loadFromFile(fileName)
++		if strings.TrimSpace(content) == "" && err == nil {
++			log.Warnf("loaded %q, but it is empty", fileName)
++		}
++		return content, err
+ 	}
+ 
+ 	return "", nil
+diff --git a/internal/pipe/changelog/changelog_test.go b/internal/pipe/changelog/changelog_test.go
+index fd7f6c27..4cc090e7 100644
+--- a/internal/pipe/changelog/changelog_test.go
++++ b/internal/pipe/changelog/changelog_test.go
+@@ -25,6 +25,13 @@ func TestChangelogProvidedViaFlag(t *testing.T) {
+ 	require.Equal(t, "c0ff33 coffeee\n", ctx.ReleaseNotes)
+ }
+ 
++func TestChangelogProvidedViaFlagIsAnWhitespaceOnlyFile(t *testing.T) {
++	ctx := context.New(config.Project{})
++	ctx.ReleaseNotesFile = "testdata/changes-empty.md"
++	require.NoError(t, Pipe{}.Run(ctx))
++	require.Equal(t, "\n", ctx.ReleaseNotes)
++}
++
+ func TestTemplatedChangelogProvidedViaFlag(t *testing.T) {
+ 	ctx := context.New(config.Project{})
+ 	ctx.ReleaseNotesFile = "testdata/changes.md"
+@@ -34,6 +41,14 @@ func TestTemplatedChangelogProvidedViaFlag(t *testing.T) {
+ 	require.Equal(t, "c0ff33 coffeee v0.0.1\n", ctx.ReleaseNotes)
+ }
+ 
++func TestTemplatedChangelogProvidedViaFlagResultIsEmpty(t *testing.T) {
++	ctx := context.New(config.Project{})
++	ctx.ReleaseNotesTmpl = "testdata/changes-templated-empty.md"
++	ctx.Git.CurrentTag = "v0.0.1"
++	require.NoError(t, Pipe{}.Run(ctx))
++	require.Equal(t, "\n\n", ctx.ReleaseNotes)
++}
++
+ func TestChangelogProvidedViaFlagDoesntExist(t *testing.T) {
+ 	ctx := context.New(config.Project{})
+ 	ctx.ReleaseNotesFile = "testdata/changes.nope"
+diff --git a/internal/pipe/changelog/testdata/changes-empty.md b/internal/pipe/changelog/testdata/changes-empty.md
+new file mode 100644
+index 00000000..8b137891
+--- /dev/null
++++ b/internal/pipe/changelog/testdata/changes-empty.md
+@@ -0,0 +1 @@
++
+diff --git a/internal/pipe/changelog/testdata/changes-templated-empty.md b/internal/pipe/changelog/testdata/changes-templated-empty.md
+new file mode 100644
+index 00000000..81eb41ee
+--- /dev/null
++++ b/internal/pipe/changelog/testdata/changes-templated-empty.md
+@@ -0,0 +1 @@
++{{ print "\n" }}

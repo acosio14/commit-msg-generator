@@ -1,0 +1,2 @@
+docs: improve setup instructions for pre-commit
+

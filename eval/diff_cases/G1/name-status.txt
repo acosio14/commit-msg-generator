@@ -1,0 +1,4 @@
+M	internal/pipe/changelog/changelog.go
+M	internal/pipe/changelog/changelog_test.go
+A	internal/pipe/changelog/testdata/changes-empty.md
+A	internal/pipe/changelog/testdata/changes-templated-empty.md

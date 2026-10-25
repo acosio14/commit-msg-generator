@@ -1,0 +1,2 @@
+repo: commitizen
+commit: 42e3dcac66d592e832667e1a98f9e490535bd91f

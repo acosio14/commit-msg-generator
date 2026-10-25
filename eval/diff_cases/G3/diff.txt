@@ -1,0 +1,28 @@
+diff --git a/www/docs/ci/actions.md b/www/docs/ci/actions.md
+index f3eabf85..71ec6702 100644
+--- a/www/docs/ci/actions.md
++++ b/www/docs/ci/actions.md
+@@ -38,6 +38,8 @@ jobs:
+         with:
+           go-version: '>=1.19.1'
+           cache: true
++      # More assembly might be required: Docker logins, GPG, etc. It all depends
++      # on your needs.
+       - uses: goreleaser/goreleaser-action@v2
+         with:
+           # either 'goreleaser' (default) or 'goreleaser-pro'
+diff --git a/www/docs/customization/docker.md b/www/docs/customization/docker.md
+index d0e1f843..ab052269 100644
+--- a/www/docs/customization/docker.md
++++ b/www/docs/customization/docker.md
+@@ -122,6 +122,10 @@ dockers:
+     - config.yml
+ ```
+ 
++!!! warning
++    Note that you will have to manually login into the Docker registries you
++    want to push to — GoReleaser does not login by itself.
++
+ !!! tip
+     Learn more about the [name template engine](/customization/templates/).
+ 

@@ -1,0 +1,5 @@
+test: Add assert of public struct size (#578)
+
+Signed-off-by: Xuanwo <github@xuanwo.io>
+
+Signed-off-by: Xuanwo <github@xuanwo.io>

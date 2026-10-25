@@ -1,0 +1,11 @@
+build: Make opendal buildable on 1.60 (#968)
+
+* Make opendal buildable on 1.63
+
+Signed-off-by: Xuanwo <github@xuanwo.io>
+
+* format code
+
+Signed-off-by: Xuanwo <github@xuanwo.io>
+
+Signed-off-by: Xuanwo <github@xuanwo.io>

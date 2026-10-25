@@ -1,0 +1,4 @@
+feat: add signoff parameter to commit command
+
+command to sign off the commit, equivalent to git commit -s
+

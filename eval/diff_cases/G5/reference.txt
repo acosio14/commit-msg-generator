@@ -1,0 +1,28 @@
+chore: update lock task parameter due to breaking change (#3623)
+
+<!--
+
+Hi, thanks for contributing!
+
+Please make sure you read our CONTRIBUTING guide.
+
+Also, add tests and the respective documentation changes as well.
+
+-->
+
+
+<!-- If applied, this commit will... -->
+
+Update lock task due to breaking changes 
+
+
+https://github.com/dessant/lock-threads/blob/master/CHANGELOG.md#changelog
+
+<!-- Why is this change being made? -->
+
+Updated the properties
+
+<!-- # Provide links to any relevant tickets, URLs or other resources
+-->
+
+...

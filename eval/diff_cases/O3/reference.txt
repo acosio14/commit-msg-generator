@@ -1,0 +1,7 @@
+refactor(oay,oli): drop unnecessary `patch.crates-io` from `Cargo.toml` (#944)
+
+Cargo is smart enough to handle [multiple locations](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#multiple-locations).
+
+Signed-off-by: messense <messense@icloud.com>
+
+Signed-off-by: messense <messense@icloud.com>

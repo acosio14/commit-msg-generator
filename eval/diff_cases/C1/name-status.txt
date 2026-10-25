@@ -1,0 +1,3 @@
+M	commitizen/cli.py
+M	commitizen/commands/commit.py
+M	tests/commands/test_commit_command.py

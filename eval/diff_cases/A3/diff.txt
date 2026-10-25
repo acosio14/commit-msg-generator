@@ -1,0 +1,43 @@
+diff --git a/packages/common/http/src/xhr.ts b/packages/common/http/src/xhr.ts
+index 6a679c72e4..d22ac54374 100644
+--- a/packages/common/http/src/xhr.ts
++++ b/packages/common/http/src/xhr.ts
+@@ -112,8 +112,6 @@ export class HttpXhrBackend implements HttpBackend {
+           return headerResponse;
+         }
+ 
+-        // Read status and normalize an IE9 bug (https://bugs.jquery.com/ticket/1450).
+-        const status: number = xhr.status === 1223 ? HttpStatusCode.NoContent : xhr.status;
+         const statusText = xhr.statusText || 'OK';
+ 
+         // Parse headers from XMLHttpRequest - this step is lazy.
+@@ -124,7 +122,7 @@ export class HttpXhrBackend implements HttpBackend {
+         const url = getResponseUrl(xhr) || req.url;
+ 
+         // Construct the HttpHeaderResponse and memoize it.
+-        headerResponse = new HttpHeaderResponse({headers, status, statusText, url});
++        headerResponse = new HttpHeaderResponse({headers, status: xhr.status, statusText, url});
+         return headerResponse;
+       };
+ 
+diff --git a/packages/common/http/test/xhr_spec.ts b/packages/common/http/test/xhr_spec.ts
+index 9c513f3f1b..148626b108 100644
+--- a/packages/common/http/test/xhr_spec.ts
++++ b/packages/common/http/test/xhr_spec.ts
+@@ -350,16 +350,6 @@ const XSSI_PREFIX = ')]}\'\n';
+       });
+     });
+     describe('corrects for quirks', () => {
+-      it('by normalizing 1223 status to 204', done => {
+-        backend.handle(TEST_POST).pipe(toArray()).subscribe(events => {
+-          expect(events.length).toBe(2);
+-          expect(events[1].type).toBe(HttpEventType.Response);
+-          const response = events[1] as HttpResponse<string>;
+-          expect(response.status).toBe(HttpStatusCode.NoContent);
+-          done();
+-        });
+-        factory.mock.mockFlush(1223, 'IE Special Status', 'Test');
+-      });
+       it('by normalizing 0 status to 200 if a body is present', done => {
+         backend.handle(TEST_POST).pipe(toArray()).subscribe(events => {
+           expect(events.length).toBe(2);

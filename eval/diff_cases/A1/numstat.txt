@@ -1,0 +1,3 @@
+1	1	goldens/public-api/router/index.md
+4	4	packages/router/src/provide_router.ts
+3	3	packages/router/testing/src/provide_router_for_testing.ts

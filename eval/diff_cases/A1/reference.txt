@@ -1,0 +1,8 @@
+feat(router): prevent `provideRouter()` from usage in @Component (#47669)
+
+This commit switches `provideRouter()` to return the new
+`EnvironmentProviders` wrapper type, preventing it from being accidentally
+(or intentionally) included in `@Component.providers`.
+
+PR Close #47669
+

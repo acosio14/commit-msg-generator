@@ -1,0 +1,7 @@
+refactor(compiler): make template preparser null-safe (#44411)
+
+This commit removes some non-null assertion operations to improve
+null-safety.
+
+PR Close #44411
+
