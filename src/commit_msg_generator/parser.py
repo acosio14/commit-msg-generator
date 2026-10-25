@@ -94,7 +94,7 @@ class DiffParser:
         
 
     def run(self) -> List[FileDiff]:
-        file_sections = re.split(r'(?<!\+)(?=diff\s--git)', self.diff_msg)[1:] # first index is empty, starting at 1
+        file_sections = re.split(r'^(?<!\+)(?=diff\s--git)', self.diff_msg, re.M)[1:] # first index is empty, starting at 1
         name_status = self._get_status() # status, file
         num_stats = self._get_stats() # added, deleted, filepath
 
