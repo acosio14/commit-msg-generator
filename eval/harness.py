@@ -31,9 +31,8 @@ def _eval():
         output_file = case / "results.txt"
         # To-Do: handle multiple runs. Do I replace results file or add new one. (FileExistError)
         with open(output_file, 'w') as f:
-            f.writelines(model)
-            for commit in commits:
-                f.writelines(commit)
+            f.write(f"{model}\n")
+            f.writelines(f"{commits}\n")
 
 
 if __name__ == "__main__":
