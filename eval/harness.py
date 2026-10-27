@@ -9,7 +9,7 @@ from commit_msg_generator.main import main
 from pathlib import Path
 
 
-def eval():
+def _eval():
 
     diff_cases_path = Path("eval") / 'diff_cases'
     diff_cases = [ x for x in diff_cases_path.iterdir()]
@@ -21,12 +21,23 @@ def eval():
         msg = case / 'diff.txt'
 
         diff = []
-        for file in [numstat, status, msg]:
-            with open(file, 'r') as f:
+        for input_file in [numstat, status, msg]:
+            with open(input_file, 'r') as f:
                 content = f.read()
             diff.append(content)
 
-        main(eval=True, diff_case=diff)
+        model, commits = main(eval=True, diff_case=diff)
+
+        output_file = case / "results.txt"
+        # To-Do: handle multiple runs. Do I replace results file or add new one. (FileExistError)
+        with open(output_file, 'w') as f:
+            f.writelines(model)
+            for commit in commits:
+                f.writelines(commit)
+
 
 if __name__ == "__main__":
-    eval()
+    _eval()
+
+# To-Do:
+# - How do I store/capture/file the output for all cases in the loop
