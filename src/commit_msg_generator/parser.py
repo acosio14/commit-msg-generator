@@ -90,7 +90,7 @@ class DiffParser:
     def _extract_filepath(self, file_section: str) -> str:
         top_diff_header = file_section.splitlines()[0]
             
-        return re.split(r'(?<=b/)', top_diff_header)[1]
+        return re.split(r'(?<= b/)', top_diff_header)[1]
         
 
     def run(self) -> List[FileDiff]:
